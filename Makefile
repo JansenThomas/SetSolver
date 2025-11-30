@@ -1,28 +1,12 @@
-# CXX = g++
-
-# CXXFLAGS = -I/usr/include/SDL2 -lSDL2
-# SOURCES = main.cpp Solver.cpp World.cpp
-# OBJECTS = $(SOURCES:.cpp=.o)
-# TARGET = my_program
-
-# all: $(TARGET)
-
-# $(TARGET): $(OBJECTS)
-# 	$(CXX) -o $@ $^ $(CXXFLAGS)
-
-# %.o: %.cpp
-# 	$(CXX) -c $< -o $@
-
-# clean:
-# 	rm -f $(OBJECTS) $(TARGET)
-
-# .PHONY: all clean
-
-
-
 CXX = g++
 CXXFLAGS = -Iexternal/SDL/include
-LDFLAGS = external/SDL/build/libSDL3.a -ldl -lpthread -lm
+
+ifeq ($(wildcard external/SDL/build/libSDL3.a),external/SDL/build/libSDL3.a)
+    LDFLAGS = external/SDL/build/libSDL3.a -ldl -lpthread -lm
+else
+    LDFLAGS = -Lexternal/SDL/build -lSDL3 -ldl -lpthread -lm
+endif
+
 
 SOURCES = main.cpp Solver.cpp World.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
