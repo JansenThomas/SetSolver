@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -I/usr/include/SDL3 -lSDL3
+CXXFLAGS = -I/usr/include/SDL2 -lSDL2
 SOURCES = main.cpp Solver.cpp World.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 TARGET = my_program

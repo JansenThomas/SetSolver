@@ -1,8 +1,7 @@
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 #include <iostream>
 #include "Solver.h"
 #include "World.h"
-#include "Window.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -24,18 +23,18 @@ int main(int, char **) {
         printSet(set);
     }
 
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return 1;
     }
     int width = 800, height = 600;
-    SDL_Window *window = SDL_CreateWindow("SetSolver", width, height, SDL_WINDOW_RESIZABLE);
+    SDL_Window *window = SDL_CreateWindow("Set Solver", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
     if (window == nullptr) {
         SDL_Log("Could not create window: %s", SDL_GetError());
         SDL_Quit();
         return 1;
     }
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == nullptr) {
         std::cout << "Could not create renderer: " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
@@ -48,7 +47,7 @@ int main(int, char **) {
     bool running = true;
     while (running) {
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
+            if (event.type == SDL_QUIT) {
                 running = false;
             }
         }
