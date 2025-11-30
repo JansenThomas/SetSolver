@@ -1,4 +1,5 @@
-#include <SDL2/SDL.h>
+// #include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 #include "Solver.h"
 #include "World.h"
@@ -15,27 +16,29 @@ void printSet(const Set &set) {
 int main(int, char **) {
     World world = world.randomWorld();
     world.printWorld();
+
     Solver solver = Solver();
     std::cout << "Solving..." << std::endl;
     std::vector<Set> sets = solver.solve(world.getCards());
     std::cout << "Solved!" << std::endl;
+
     for (const Set &set : sets) {
         printSet(set);
     }
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return 1;
     }
     int width = 800, height = 600;
-    SDL_Window *window = SDL_CreateWindow("Set Solver", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
+    SDL_Window *window = SDL_CreateWindow("Set Solver", width, height, SDL_WINDOW_RESIZABLE);
     if (window == nullptr) {
         SDL_Log("Could not create window: %s", SDL_GetError());
         SDL_Quit();
         return 1;
     }
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == nullptr) {
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, nullptr);
+    if (!renderer) {
         std::cout << "Could not create renderer: " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -47,13 +50,16 @@ int main(int, char **) {
     bool running = true;
     while (running) {
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+            if (event.type == SDL_EVENT_QUIT) {
                 running = false;
             }
         }
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
     }
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 // // SDL_Quit();
 // return 0;
